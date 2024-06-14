@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors')
 
 const app = express();
 const PORT = 3000;
@@ -10,7 +11,7 @@ const filePath = path.join(__dirname, 'data', 'todos.json');
 
 // Middleware
 app.use(bodyParser.json());
-
+app.use(cors())
 // Helper function to read the JSON file
 const readTodos = () => {
   const data = fs.readFileSync(filePath, 'utf8');
