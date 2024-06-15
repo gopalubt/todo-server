@@ -1,29 +1,34 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const path = require('path');
 const { program } = require('commander');
 
 program
   .version('1.0.0')
   .description('Command to generate a complete API structure')
-  .argument('<apiName>', 'Name of the API to create')
-  .action((apiName) => {
-    createApi(apiName);
+  .arguments('<command> <action> <type> <apiName>')
+  .action((command, action, type, apiName) => {
+    if (command === 'server' && action === 'create' && type === 'api' && apiName) {
+      createApi(apiName);
+    } else {
+      console.error('Invalid command format. Use: node create-api.js server create <apiName>');
+      process.exit(1);
+    }
   });
 
 program.parse(process.argv);
 
 function createApi(apiName) {
-  const apiDirectory = `./${apiName}`;
-  const controllersDirectory = `${apiDirectory}/controllers`;
-  const modelsDirectory = `${apiDirectory}/models`;
-  const routesDirectory = `${apiDirectory}/routes`;
+  const apiDirectory = path.join(__dirname, apiName);
+  const controllersDirectory = path.join(__dirname, 'controllers');
+  const modelsDirectory = path.join(__dirname, 'models');
+  const routesDirectory = path.join(__dirname, 'routes');
 
-  // Create API directory and subdirectories
-  fs.mkdirSync(apiDirectory);
-  fs.mkdirSync(controllersDirectory);
-  fs.mkdirSync(modelsDirectory);
-  fs.mkdirSync(routesDirectory);
+  // Create API directory if it doesn't exist
+  if (!fs.existsSync(apiDirectory)) {
+    fs.mkdirSync(apiDirectory);
+  }
 
   // Create files in respective directories
   fs.writeFileSync(`${controllersDirectory}/${apiName}Controller.js`, generateController(apiName));
