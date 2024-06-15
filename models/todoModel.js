@@ -1,18 +1,15 @@
-const fs = require('fs');
-const path = require('path');
+const BaseModel = require('./BaseModel');
 
-const filePath = path.join(__dirname, '../data/todos.json');
-
-const readTodos = () => {
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(data);
+const TodoSchema = {
+  title: 'string',
+  description: 'string',
+  completed: 'boolean'
 };
 
-const writeTodos = (todos) => {
-  fs.writeFileSync(filePath, JSON.stringify(todos, null, 2));
-};
+class TodoModel extends BaseModel {
+  constructor() {
+    super('todos.json', TodoSchema);
+  }
+}
 
-module.exports = {
-  readTodos,
-  writeTodos
-};
+module.exports = TodoModel;

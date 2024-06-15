@@ -1,16 +1,18 @@
 const express = require('express');
-const cors = require('cors');
-const todoRoutes = require('./routes/todoRoutes');
+const routes = require('./routes/index');
+const middlewares = require('./middleware/middleware');
 
 const app = express();
 const port = 3000;
 
-// Middleware
-app.use(express.json());
-app.use(cors());
+// Run the middlewares in sequence
+middlewares.middlewareRunner(app, middlewares.middlewares);
 
 // Routes
-app.use('/api', todoRoutes);
+app.use('/api', routes);
+
+// Error handling middleware
+app.use(middlewares.errorHandler);
 
 // Start the server
 app.listen(port, () => {
